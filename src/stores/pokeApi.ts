@@ -1,8 +1,11 @@
-import type { IsGenerationData, IsGenerationsData } from '@/types/generation';
+import type { IsGenerationData, IsGenerationsData, IsMergedGenerationData } from '@/types/generation';
 import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
 export const usePokeApiStore = defineStore('pokeApi', () => {
   const apiBaseUrl = 'https://pokeapi.co/api/v2/';
+
+  const generations = ref<IsMergedGenerationData[]>([]);
 
   const getAllGenerations = async () => {
     const response = await fetch(`${apiBaseUrl}generation`, {
@@ -26,5 +29,22 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     }
   };
 
-  return { getAllGenerations, getGenerationByName };
+  const getNameByLanguage = (names: IsGenerationData['names'], language = 'en') => {
+    const name = names.find((name) => name.language.name === language);
+    return name ? name.name : '';
+  };
+
+  const getGenerationsData = async () => {
+    const generationsData = await getAllGenerations();
+    if (generationsData) {
+      generationsData.forEach(async (generationData) => {
+        const generation = await getGenerationByName(generationData.name);
+        if (generation) {
+          generations.value.push({ ...generation, url: generationData.url });
+        }
+      });
+    }
+  };
+
+  return { generations, getGenerationsData, getNameByLanguage };
 });

@@ -21,3 +21,7 @@ export interface IsGenerationData {
 }
 
 export type IsGenerationsData = IsApiItemReference[];
+
+export interface IsMergedGenerationData extends IsGenerationData {
+  url: IsApiItemReference['url'];
+}
