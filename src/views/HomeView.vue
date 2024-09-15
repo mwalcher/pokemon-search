@@ -3,18 +3,32 @@ import { usePokeApiStore } from '@/stores/pokeApi';
 import { onMounted, ref } from 'vue';
 
 const pokeApiStore = usePokeApiStore();
-const { getGenerationsList } = pokeApiStore;
+const { getAllGenerations, getGenerationByName } = pokeApiStore;
 
+const isPageLoading = ref(false);
 const generations = ref([]);
 
+const getGenerationsList = async () => {
+  isPageLoading.value = true;
+  const generationsData = await getAllGenerations();
+  generationsData.forEach(async (generationData) => {
+    const generation = await getGenerationByName(generationData.name);
+    const generationName = generation.names.find((name) => name.language.name === 'en').name;
+    generations.value.push({
+      name: generationName,
+    });
+  });
+  isPageLoading.value = false;
+};
+
 onMounted(async () => {
-  generations.value = await getGenerationsList();
+  await getGenerationsList();
 });
 </script>
 
 <template>
   <h1>Home</h1>
-  <div>
+  <div v-if="!isPageLoading">
     <ul>
       <li v-for="generation in generations" :key="generation.name">
         <button>{{ generation.name }}</button>
