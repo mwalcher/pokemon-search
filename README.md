@@ -16,7 +16,7 @@ npm ci
 ### Compile and Hot-Reload for Development
 
 ```sh
-npm run dev
+npm start
 ```
 
 ### Type-Check, Compile and Minify for Production
