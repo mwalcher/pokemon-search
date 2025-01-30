@@ -1,11 +1,12 @@
+import { defineStore } from 'pinia';
+import { ref } from 'vue';
+
 import type {
   IsApiItemReference,
   IsGenerationData,
   IsGenerationsData,
   IsMergedGenerationData,
 } from '@/types/generation';
-import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 export const usePokeApiStore = defineStore('pokeApi', () => {
   const apiBaseUrl = 'https://pokeapi.co/api/v2/';
