@@ -1,7 +1,7 @@
 import type { IsApiItemReference, IsName, IsNamesData, IsUrl } from '@/types/pokeApi';
 
 export interface IsGenerationData {
-  abilities: any[];
+  abilities: IsApiItemReference[];
   id: number;
   main_region: IsApiItemReference;
   moves: IsApiItemReference[];

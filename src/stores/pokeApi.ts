@@ -2,14 +2,15 @@ import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 import type { IsGenerationData, IsGenerationsData, IsMergedGenerationData } from '@/types/generation';
-import type { IsApiItemReference } from '@/types/pokeApi';
+import type { IsApiItemReference, IsUrl } from '@/types/pokeApi';
+import type { IsVersionData, IsVersionGroupData } from '@/types/versions';
+
+const apiBaseUrl = 'https://pokeapi.co/api/v2/';
 
 export const usePokeApiStore = defineStore('pokeApi', () => {
-  const apiBaseUrl = 'https://pokeapi.co/api/v2/';
-
   const generations = ref<IsMergedGenerationData[]>([]);
 
-  const getDataByUrl = async (url: IsApiItemReference['url']) => {
+  const getDataByUrl = async (url: IsUrl) => {
     const response = await fetch(url, {
       method: 'GET',
     });
@@ -37,13 +38,14 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     }
   };
 
-  const getVersionsData = async (versionGroups: IsGenerationData['version_groups']) => {
+  const getVersionsData = async (versionGroups: IsApiItemReference[]) => {
     const versionGroupsData = await Promise.all(
       versionGroups.map(async (versionGroup) => {
-        const versionGroupData = await getDataByUrl(versionGroup.url);
+        const versionGroupData: IsVersionGroupData = await getDataByUrl(versionGroup.url);
+        console.log('versionGroupData:', versionGroupData);
         if (versionGroupData) {
-          versionGroupData.versions.map(async (version: IsApiItemReference) => {
-            const versionData = await getDataByUrl(version.url);
+          versionGroupData.versions.map(async (version) => {
+            const versionData: IsVersionData = await getDataByUrl(version.url);
             if (versionData) {
               console.log('versionData:', versionData);
             }
