@@ -17,6 +17,8 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@vueuse/integrations": "12.5.0",
+    "change-case": "5.4.4",
     "pinia": "2.2.2",
     "vue": "3.5.5",
     "vue-router": "4.4.5"
