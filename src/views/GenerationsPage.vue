@@ -2,6 +2,7 @@
 import { usePokeApiStore } from '@/stores/pokeApi';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 const pokeApiStore = usePokeApiStore();
 const { getGenerationsData, getNameByLanguage } = pokeApiStore;
@@ -17,11 +18,13 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h1>Home</h1>
+  <h1>Generations</h1>
   <div v-if="!isPageLoading">
     <ul>
       <li v-for="generation in generations" :key="generation.name">
-        <button>{{ getNameByLanguage(generation.names) }}: {{ generation.main_region.name }}</button>
+        <RouterLink :to="`/generation/${generation.id}`">
+          {{ getNameByLanguage(generation.names) }}: {{ generation.main_region.name }}
+        </RouterLink>
       </li>
     </ul>
   </div>
