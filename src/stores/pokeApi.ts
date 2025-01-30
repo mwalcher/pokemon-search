@@ -29,9 +29,9 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
   };
 
   const getGenerationsData = async () => {
-    const generationsData: IsGenerationsData = await getDataByUrl(`${apiBaseUrl}generation`);
+    const generationsData: { results: IsGenerationsData } = await getDataByUrl(`${apiBaseUrl}generation`);
     if (generationsData) {
-      generationsData.forEach(async (generationData) => {
+      generationsData.results.forEach(async (generationData) => {
         const generation: IsGenerationData = await getDataByUrl(generationData.url);
         if (generation) {
           generations.value.push({ ...generation, url: generationData.url });
