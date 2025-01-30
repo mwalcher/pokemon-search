@@ -1,9 +1,4 @@
-export type IsName = string;
-
-export interface IsApiItemReference {
-  name: IsName;
-  url: string;
-}
+import type { IsApiItemReference, IsName, IsNamesData, IsUrl } from '@/types/pokeApi';
 
 export interface IsGenerationData {
   abilities: any[];
@@ -11,10 +6,7 @@ export interface IsGenerationData {
   main_region: IsApiItemReference;
   moves: IsApiItemReference[];
   name: IsName;
-  names: {
-    language: IsApiItemReference;
-    name: IsName;
-  }[];
+  names: IsNamesData;
   pokemon_species: IsApiItemReference[];
   types: IsApiItemReference[];
   version_groups: IsApiItemReference[];
@@ -26,5 +18,5 @@ export type IsGenerationsData = {
 };
 
 export interface IsMergedGenerationData extends IsGenerationData {
-  url: IsApiItemReference['url'];
+  url: IsUrl;
 }

@@ -1,12 +1,8 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
-import type {
-  IsApiItemReference,
-  IsGenerationData,
-  IsGenerationsData,
-  IsMergedGenerationData,
-} from '@/types/generation';
+import type { IsGenerationData, IsGenerationsData, IsMergedGenerationData } from '@/types/generation';
+import type { IsApiItemReference } from '@/types/pokeApi';
 
 export const usePokeApiStore = defineStore('pokeApi', () => {
   const apiBaseUrl = 'https://pokeapi.co/api/v2/';
@@ -41,5 +37,24 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     }
   };
 
-  return { generations, getGenerationsData };
+  const getVersionsData = async (versionGroups: IsGenerationData['version_groups']) => {
+    const versionGroupsData = await Promise.all(
+      versionGroups.map(async (versionGroup) => {
+        const versionGroupData = await getDataByUrl(versionGroup.url);
+        if (versionGroupData) {
+          versionGroupData.versions.map(async (version: IsApiItemReference) => {
+            const versionData = await getDataByUrl(version.url);
+            if (versionData) {
+              console.log('versionData:', versionData);
+            }
+          });
+        }
+        return versionGroupData;
+      }),
+    );
+
+    return versionGroupsData;
+  };
+
+  return { generations, getGenerationsData, getVersionsData };
 });
