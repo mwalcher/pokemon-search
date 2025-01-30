@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useChangeCase } from '@vueuse/integrations/useChangeCase';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref } from 'vue';
 import { RouterLink, useRoute, useRouter } from 'vue-router';
 
 import { usePokeApiStore } from '@/stores/pokeApi';
 import type { IsMergedGenerationData } from '@/types/generation';
+import { toCapitalCase } from '@/utilities/text';
 
 const route = useRoute();
 const router = useRouter();
@@ -25,7 +25,7 @@ onMounted(async () => {
 
 <template>
   <template v-if="generation">
-    <h1>{{ useChangeCase(generation.main_region.name, 'capitalCase') }}</h1>
+    <h1>{{ toCapitalCase(generation.main_region.name) }}</h1>
     <RouterLink to="/">All Generations</RouterLink>
 
     <pre>

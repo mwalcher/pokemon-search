@@ -3,9 +3,10 @@ import { storeToRefs } from 'pinia';
 import { RouterLink } from 'vue-router';
 
 import { usePokeApiStore } from '@/stores/pokeApi';
+import { getGenNameByLanguage } from '@/utilities/pokeApi';
+import { toCapitalCase } from '@/utilities/text';
 
 const pokeApiStore = usePokeApiStore();
-const { getNameByLanguage } = pokeApiStore;
 const { generations } = storeToRefs(pokeApiStore);
 </script>
 
@@ -14,7 +15,7 @@ const { generations } = storeToRefs(pokeApiStore);
   <ul>
     <li v-for="generation in generations" :key="generation.name">
       <RouterLink :to="`/generation/${generation.id}`">
-        {{ getNameByLanguage(generation.names) }}: {{ generation.main_region.name }}
+        {{ getGenNameByLanguage(generation.names) }}: {{ toCapitalCase(generation.main_region.name) }}
       </RouterLink>
     </li>
   </ul>

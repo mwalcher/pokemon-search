@@ -24,11 +24,6 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     }
   };
 
-  const getNameByLanguage = (names: IsGenerationData['names'], language = 'en') => {
-    const name = names.find((name) => name.language.name === language);
-    return name ? name.name : '';
-  };
-
   const getGenerationsData = async () => {
     if (generations.value.length) return;
     const generationsData: IsGenerationsData = await getDataByUrl(`${apiBaseUrl}generation`);
@@ -46,5 +41,5 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     }
   };
 
-  return { generations, getGenerationsData, getNameByLanguage };
+  return { generations, getGenerationsData };
 });
