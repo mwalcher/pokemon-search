@@ -1,4 +1,4 @@
-import type { IsApiItemReference, IsName, IsNamesData } from '@/types/pokeApi';
+import type { IsApiItemReference, IsName, IsNamesData, IsUrl } from '@/types/pokeApi';
 
 export interface IsVersionGroupData {
   generation: IsApiItemReference;
@@ -11,9 +11,23 @@ export interface IsVersionGroupData {
   versions: IsApiItemReference[];
 }
 
+export interface IsMergedVersionGroupData extends IsVersionGroupData {
+  url: IsUrl;
+}
+
 export interface IsVersionData {
   id: number;
   name: IsName;
   names: IsNamesData;
   version_group: IsApiItemReference;
 }
+
+export interface IsMergedVersionData extends IsVersionData {
+  url: IsUrl;
+}
+
+export type IsVersionStorageData = {
+  generation_name: IsName;
+  version_groups: IsMergedVersionGroupData[];
+  versions: IsMergedVersionData[];
+};

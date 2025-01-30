@@ -1,14 +1,22 @@
+import { type RemovableRef, useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 
 import type { IsGenerationData, IsGenerationsData, IsMergedGenerationData } from '@/types/generation';
-import type { IsApiItemReference, IsUrl } from '@/types/pokeApi';
-import type { IsVersionData, IsVersionGroupData } from '@/types/versions';
+import type { IsApiItemReference, IsName, IsUrl } from '@/types/pokeApi';
+import type {
+  IsMergedVersionData,
+  IsMergedVersionGroupData,
+  IsVersionData,
+  IsVersionGroupData,
+  IsVersionStorageData,
+} from '@/types/versions';
 
 const apiBaseUrl = 'https://pokeapi.co/api/v2/';
 
 export const usePokeApiStore = defineStore('pokeApi', () => {
   const generations = ref<IsMergedGenerationData[]>([]);
+  const versionsByGeneration: RemovableRef<IsVersionStorageData[]> = useStorage('pokeApi_versions', []);
 
   const getDataByUrl = async (url: IsUrl) => {
     const response = await fetch(url, {
@@ -38,25 +46,39 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     }
   };
 
-  const getVersionsData = async (versionGroups: IsApiItemReference[]) => {
-    const versionGroupsData = await Promise.all(
+  const getVersionsData = async (generationName: IsName, versionGroups: IsApiItemReference[]) => {
+    if (versionsByGeneration.value.some((generation) => generation.generation_name === generationName)) return;
+
+    const versionGroupsArray: IsMergedVersionGroupData[] = [];
+    const versionsArray: IsApiItemReference[] = [];
+    const versionsDateArray: IsMergedVersionData[] = [];
+
+    await Promise.all(
       versionGroups.map(async (versionGroup) => {
         const versionGroupData: IsVersionGroupData = await getDataByUrl(versionGroup.url);
-        console.log('versionGroupData:', versionGroupData);
         if (versionGroupData) {
-          versionGroupData.versions.map(async (version) => {
-            const versionData: IsVersionData = await getDataByUrl(version.url);
-            if (versionData) {
-              console.log('versionData:', versionData);
-            }
-          });
+          versionGroupsArray.push({ ...versionGroupData, url: versionGroup.url });
+          versionsArray.push(...versionGroupData.versions);
         }
-        return versionGroupData;
       }),
     );
 
-    return versionGroupsData;
+    await Promise.all(
+      versionsArray.map(async (version) => {
+        const versionData: IsVersionData = await getDataByUrl(version.url);
+        if (versionData) {
+          versionsDateArray.push({ ...versionData, url: version.url });
+        }
+      }),
+    );
+
+    // TODO: Add sorting for version groups and versions
+    versionsByGeneration.value.push({
+      generation_name: generationName,
+      version_groups: versionGroupsArray,
+      versions: versionsDateArray,
+    });
   };
 
-  return { generations, getGenerationsData, getVersionsData };
+  return { generations, versionsByGeneration, getGenerationsData, getVersionsData };
 });
