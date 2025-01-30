@@ -20,7 +20,10 @@ export interface IsGenerationData {
   version_groups: IsApiItemReference[];
 }
 
-export type IsGenerationsData = IsApiItemReference[];
+export type IsGenerationsData = {
+  count: number;
+  results: IsApiItemReference[];
+};
 
 export interface IsMergedGenerationData extends IsGenerationData {
   url: IsApiItemReference['url'];
