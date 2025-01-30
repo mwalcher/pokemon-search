@@ -28,19 +28,8 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     return name ? name.name : '';
   };
 
-  const getAllGenerations = async () => {
-    const response = await fetch(`${apiBaseUrl}generation`, {
-      method: 'GET',
-    });
-
-    if (response.ok) {
-      const data: { results: IsGenerationsData } = await response.json();
-      return data.results;
-    }
-  };
-
   const getGenerationsData = async () => {
-    const generationsData = await getAllGenerations();
+    const generationsData: IsGenerationsData = await getDataByUrl(`${apiBaseUrl}generation`);
     if (generationsData) {
       generationsData.forEach(async (generationData) => {
         const generation: IsGenerationData = await getDataByUrl(generationData.url);
