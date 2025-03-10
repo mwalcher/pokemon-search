@@ -72,11 +72,10 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
       }),
     );
 
-    // TODO: Add sorting for version groups and versions
     versionsByGeneration.value.push({
       generation_name: generationName,
-      version_groups: versionGroupsArray,
-      versions: versionsDateArray,
+      version_groups: versionGroupsArray.sort((a, b) => a.id - b.id),
+      versions: versionsDateArray.sort((a, b) => a.id - b.id),
     });
   };
 

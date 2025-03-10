@@ -28,11 +28,7 @@ onMounted(async () => {
   }
 
   await getVersionsData(generation.value.name, generation.value.version_groups);
-  // TODO: Fix error
   versionData.value = versionsByGeneration.value.find((gen) => gen.generation_name === generation.value?.name);
-  if (versionData.value) {
-    console.log(versionData.value.versions);
-  }
 });
 </script>
 
