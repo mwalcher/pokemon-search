@@ -30,6 +30,10 @@ onMounted(async () => {
   await getVersionsData(generation.value.name, generation.value.version_groups);
   versionData.value = versionsByGeneration.value.find((gen) => gen.generation_name === generation.value?.name);
 });
+
+function getImageUrl(id: string) {
+  return new URL(`../assets/pokemon/generation-i/red-blue/${id}.png`, import.meta.url).href;
+}
 </script>
 
 <template>
@@ -39,6 +43,7 @@ onMounted(async () => {
   </template>
   <ul v-if="versionData">
     <li v-for="version in versionData.versions" :key="version.name">
+      <img :src="getImageUrl(version.id.toString())" :alt="version.name" />
       {{ version.name }}
     </li>
   </ul>
