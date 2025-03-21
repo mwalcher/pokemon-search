@@ -6,7 +6,7 @@ import { RouterLink, useRoute, useRouter } from 'vue-router';
 import { usePokeApiStore } from '@/stores/pokeApi';
 import type { IsMergedGenerationData } from '@/types/generation';
 import type { IsVersionStorageData } from '@/types/versions';
-import { getImageUrl } from '@/utilities/image';
+import { getImageUrl, getVersionPath } from '@/utilities/image';
 import { getNameByLanguage } from '@/utilities/pokeApi';
 import { toCapitalCase } from '@/utilities/text';
 
@@ -42,11 +42,7 @@ const baseUrl = import.meta.url;
   </template>
   <ul v-if="versionData" :class="$style['version-list']">
     <li v-for="version in versionData.versions" :key="version.name">
-      <img
-        :class="$style['cover-art']"
-        :src="getImageUrl(baseUrl, `versions/generation-i/${version.name}`)"
-        :alt="version.name"
-      />
+      <img :class="$style['cover-art']" :src="getImageUrl(baseUrl, getVersionPath(version))" :alt="version.name" />
     </li>
   </ul>
 </template>
