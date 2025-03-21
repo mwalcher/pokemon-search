@@ -40,10 +40,29 @@ const baseUrl = import.meta.url;
     <h1>{{ toCapitalCase(generation.main_region.name) }} ({{ getNameByLanguage(generation.names) }})</h1>
     <RouterLink to="/">All Generations</RouterLink>
   </template>
-  <ul v-if="versionData">
+  <ul v-if="versionData" :class="$style['version-list']">
     <li v-for="version in versionData.versions" :key="version.name">
-      <img :src="getImageUrl(baseUrl, `pokemon/generation-i/red-blue/${version.id.toString()}`)" :alt="version.name" />
-      {{ version.name }}
+      <img
+        :class="$style['cover-art']"
+        :src="getImageUrl(baseUrl, `versions/generation-i/${version.name}`)"
+        :alt="version.name"
+      />
     </li>
   </ul>
 </template>
+
+<style module>
+.version-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 1rem;
+  list-style: none;
+  padding: 0;
+}
+
+.cover-art {
+  display: block;
+  width: 100%;
+  max-width: 10rem;
+}
+</style>
