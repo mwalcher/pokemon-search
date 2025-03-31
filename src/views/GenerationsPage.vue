@@ -14,7 +14,7 @@ const { generations } = storeToRefs(pokeApiStore);
   <h1>Generations</h1>
   <ul>
     <li v-for="generation in generations" :key="generation.name">
-      <RouterLink :to="`/generation/${generation.id}`">
+      <RouterLink :to="{ name: 'generation', params: { generationId: generation.id } }">
         {{ getNameByLanguage(generation.names) }}: {{ toCapitalCase(generation.main_region.name) }}
       </RouterLink>
     </li>

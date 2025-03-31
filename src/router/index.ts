@@ -6,12 +6,17 @@ const router = createRouter({
     {
       path: '/',
       name: 'generations',
-      component: () => import('../views/GenerationsPage.vue'),
+      component: () => import('@/views/GenerationsPage.vue'),
     },
     {
-      path: '/generation/:id',
+      path: '/generation/:generationId',
       name: 'generation',
-      component: () => import('../views/GenerationPage.vue'),
+      component: () => import('@/views/GenerationPage.vue'),
+    },
+    {
+      path: '/version/:versionId',
+      name: 'version',
+      component: () => import('@/views/VersionPage.vue'),
     },
   ],
 });

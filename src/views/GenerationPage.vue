@@ -16,11 +16,11 @@ const pokeApiStore = usePokeApiStore();
 const { getVersionsData } = pokeApiStore;
 const { generations, versionsByGeneration } = storeToRefs(pokeApiStore);
 
+const generationId = Number(route.params.generationId);
 const generation = ref<IsMergedGenerationData>();
 const versionData = ref<IsVersionStorageData>();
 
 onMounted(async () => {
-  const generationId = Number(route.params.id);
   generation.value = generations.value.find((gen) => gen.id === generationId);
 
   if (!generation.value) {
@@ -38,11 +38,13 @@ const baseUrl = import.meta.url;
 <template>
   <template v-if="generation">
     <h1>{{ toCapitalCase(generation.main_region.name) }} ({{ getNameByLanguage(generation.names) }})</h1>
-    <RouterLink to="/">All Generations</RouterLink>
+    <RouterLink :to="{ name: 'generations' }">All Generations</RouterLink>
   </template>
   <ul v-if="versionData" :class="$style['version-list']">
     <li v-for="version in versionData.versions" :key="version.name">
-      <img :class="$style['cover-art']" :src="getImageUrl(baseUrl, getVersionPath(version))" :alt="version.name" />
+      <RouterLink :to="{ name: 'version', params: { versionId: version.id } }">
+        <img :class="$style['cover-art']" :src="getImageUrl(baseUrl, getVersionPath(version))" :alt="version.name" />
+      </RouterLink>
     </li>
   </ul>
 </template>
