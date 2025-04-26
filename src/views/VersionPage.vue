@@ -45,7 +45,7 @@ onMounted(async () => {
   <template v-if="versionData && generation">
     <h1>{{ toCapitalCase(getNameByLanguage(versionData.names)) }}</h1>
     <RouterLink :to="{ name: 'generation', params: { generationId: generation.id } }">
-      Back to {{ getNameByLanguage(generation.names) }}: {{ toCapitalCase(generation.main_region.name) }}
+      Back to {{ getNameByLanguage(generation.names) }}
     </RouterLink>
     <img
       :class="$style['cover-art']"
