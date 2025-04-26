@@ -5,7 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { usePokeApiStore } from '@/stores/pokeApi';
 import type { IsMergedGenerationData } from '@/types/generation';
-import type { IsMergedVersionData, IsVersionStorageData } from '@/types/versions';
+import type { IsMergedVersionData, IsMergedVersionGroupData, IsVersionStorageData } from '@/types/versions';
 import { getImageUrl, getVersionPath } from '@/utilities/image';
 import { getNameByLanguage } from '@/utilities/pokeApi';
 import { toCapitalCase } from '@/utilities/text';
@@ -14,12 +14,13 @@ const baseUrl = import.meta.url;
 const route = useRoute();
 const router = useRouter();
 const pokeApiStore = usePokeApiStore();
-const { getPokemonSpeciesData } = pokeApiStore;
-const { generations, versionsByGeneration, pokemonSpecies } = storeToRefs(pokeApiStore);
+const { getVersionPokedexData } = pokeApiStore;
+const { generations, versionsByGeneration, pokedexes } = storeToRefs(pokeApiStore);
 
 const versionId = Number(route.params.versionId);
 const generation = ref<IsMergedGenerationData>();
 const generationVersionData = ref<IsVersionStorageData>();
+const versionGroupData = ref<IsMergedVersionGroupData>();
 const versionData = ref<IsMergedVersionData>();
 
 onMounted(async () => {
@@ -38,14 +39,17 @@ onMounted(async () => {
   }
 
   versionData.value = generationVersionData.value.versions.find((version) => version.id === versionId);
+  versionGroupData.value = generationVersionData.value.version_groups.find((group) =>
+    group.versions.some((version) => version.name === versionData.value?.name),
+  );
   generation.value = generations.value.find((gen) => gen.name === generationVersionData.value?.generation_name);
 
-  if (!versionData.value || !generation.value) {
+  if (!versionGroupData.value) {
     router.push('/');
     return;
   }
 
-  await getPokemonSpeciesData(generation.value.pokemon_species);
+  await getVersionPokedexData(versionGroupData.value.pokedexes);
 });
 </script>
 
@@ -60,10 +64,14 @@ onMounted(async () => {
       :src="getImageUrl(baseUrl, getVersionPath(versionData))"
       :alt="versionData.name"
     />
-    <h2>Pokemon Species</h2>
+  </template>
+
+  <h2>Pokedex</h2>
+  <template v-for="pokedex in pokedexes" :key="pokedex.name">
+    <h3>{{ toCapitalCase(pokedex.name) }}</h3>
     <ul>
-      <li v-for="pokemon in pokemonSpecies" :key="pokemon.name">
-        {{ toCapitalCase(pokemon.name) }}
+      <li v-for="pokemon in pokedex.pokemon_entries" :key="pokemon.pokemon_species.name">
+        {{ toCapitalCase(pokemon.pokemon_species.name) }}
       </li>
     </ul>
   </template>

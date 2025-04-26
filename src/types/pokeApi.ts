@@ -41,6 +41,11 @@ export type IsPokedexEntryData = {
   pokedex: IsNamedApiResource;
 }[];
 
+export type IsPokemonEntryData = {
+  entry_number: number;
+  pokemon_species: IsNamedApiResource;
+}[];
+
 export type IsPokemonSpeciesVarietyData = {
   is_default: boolean;
   pokemon: IsNamedApiResource;

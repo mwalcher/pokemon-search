@@ -1,10 +1,9 @@
 import { type RemovableRef, useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 import type { IsGenerationData, IsGenerationsData, IsMergedGenerationData } from '@/types/generation';
 import type { IsName, IsNamedApiResource, IsUrl } from '@/types/pokeApi';
-import type { IsMergedPokemonSpeciesData } from '@/types/pokemon';
+import type { IsMergedPokedexData } from '@/types/pokedex';
 import type {
   IsMergedVersionData,
   IsMergedVersionGroupData,
@@ -18,7 +17,7 @@ const apiBaseUrl = 'https://pokeapi.co/api/v2/';
 export const usePokeApiStore = defineStore('pokeApi', () => {
   const generations: RemovableRef<IsMergedGenerationData[]> = useStorage('pokeApi_generations', []);
   const versionsByGeneration: RemovableRef<IsVersionStorageData[]> = useStorage('pokeApi_versions', []);
-  const pokemonSpecies = ref<IsMergedPokemonSpeciesData[]>([]);
+  const pokedexes: RemovableRef<IsMergedPokedexData[]> = useStorage('pokeApi_pokedexes', []);
 
   const getDataByUrl = async (url: IsUrl) => {
     const response = await fetch(url, {
@@ -53,7 +52,7 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
 
     const versionGroupsArray: IsMergedVersionGroupData[] = [];
     const versionsArray: IsNamedApiResource[] = [];
-    const versionsDateArray: IsMergedVersionData[] = [];
+    const versionsDataArray: IsMergedVersionData[] = [];
 
     await Promise.all(
       versionGroups.map(async (versionGroup) => {
@@ -69,7 +68,7 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
       versionsArray.map(async (version) => {
         const versionData: IsVersionData = await getDataByUrl(version.url);
         if (versionData) {
-          versionsDateArray.push({ ...versionData, url: version.url });
+          versionsDataArray.push({ ...versionData, url: version.url });
         }
       }),
     );
@@ -77,30 +76,32 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     versionsByGeneration.value.push({
       generation_name: generationName,
       version_groups: versionGroupsArray.sort((a, b) => a.id - b.id),
-      versions: versionsDateArray.sort((a, b) => a.id - b.id),
+      versions: versionsDataArray.sort((a, b) => a.id - b.id),
     });
   };
 
-  const getPokemonSpeciesData = async (pokemonSpeciesList: IsNamedApiResource[]) => {
+  const getVersionPokedexData = async (pokedexesList: IsNamedApiResource[]) => {
+    const pokedexesArray: IsMergedPokedexData[] = [];
+
     await Promise.all(
-      pokemonSpeciesList.map(async (species) => {
-        if (pokemonSpecies.value.some((pokemon) => pokemon.name === species.name)) return;
-        const pokemonSpeciesData = await getDataByUrl(species.url);
-        if (pokemonSpeciesData) {
-          pokemonSpecies.value.push({ ...pokemonSpeciesData, url: species.url });
+      pokedexesList.map(async (pokedex) => {
+        if (pokedexes.value.some((item) => item.name === pokedex.name)) return;
+        const pokedexData = await getDataByUrl(pokedex.url);
+        if (pokedexData) {
+          pokedexesArray.push({ ...pokedexData, url: pokedex.url });
         }
       }),
     );
 
-    pokemonSpecies.value.sort((a, b) => a.order - b.order);
+    pokedexes.value.push(...pokedexesArray);
   };
 
   return {
     generations,
-    pokemonSpecies,
+    pokedexes,
     versionsByGeneration,
     getGenerationsData,
-    getPokemonSpeciesData,
+    getVersionPokedexData,
     getVersionsData,
   };
 });
