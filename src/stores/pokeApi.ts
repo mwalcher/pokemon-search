@@ -56,7 +56,7 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     await Promise.all(
       versionGroups.map(async (versionGroup) => {
         const versionGroupData: IsVersionGroupData = await getDataByUrl(versionGroup.url);
-        if (versionGroupData) {
+        if (versionGroupData && versionGroupData.name.includes('-japan') === false) {
           versionGroupsArray.push({ ...versionGroupData, url: versionGroup.url });
           versionsArray.push(...versionGroupData.versions);
         }
