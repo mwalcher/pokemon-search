@@ -63,7 +63,7 @@ onMounted(async () => {
     <h2>Pokemon Species</h2>
     <ul>
       <li v-for="pokemon in pokemonSpecies" :key="pokemon.name">
-        {{ toCapitalCase(pokemon.name) }} (Order: {{ pokemon.order }})
+        {{ toCapitalCase(pokemon.name) }}
       </li>
     </ul>
   </template>

@@ -1,5 +1,6 @@
 import { type RemovableRef, useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
+import { ref } from 'vue';
 
 import type { IsGenerationData, IsGenerationsData, IsMergedGenerationData } from '@/types/generation';
 import type { IsName, IsNamedApiResource, IsUrl } from '@/types/pokeApi';
@@ -17,7 +18,7 @@ const apiBaseUrl = 'https://pokeapi.co/api/v2/';
 export const usePokeApiStore = defineStore('pokeApi', () => {
   const generations: RemovableRef<IsMergedGenerationData[]> = useStorage('pokeApi_generations', []);
   const versionsByGeneration: RemovableRef<IsVersionStorageData[]> = useStorage('pokeApi_versions', []);
-  const pokemonSpecies: RemovableRef<IsMergedPokemonSpeciesData[]> = useStorage('pokeApi_pokemon', []);
+  const pokemonSpecies = ref<IsMergedPokemonSpeciesData[]>([]);
 
   const getDataByUrl = async (url: IsUrl) => {
     const response = await fetch(url, {
@@ -81,14 +82,17 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
   };
 
   const getPokemonSpeciesData = async (pokemonSpeciesList: IsNamedApiResource[]) => {
-    pokemonSpeciesList.map(async (species, index) => {
-      if (index > 0) return;
-      if (pokemonSpecies.value.some((pokemon) => pokemon.name === species.name)) return;
-      const pokemonSpeciesData = await getDataByUrl(species.url);
-      if (pokemonSpeciesData) {
-        pokemonSpecies.value.push({ ...pokemonSpeciesData, url: species.url });
-      }
-    });
+    await Promise.all(
+      pokemonSpeciesList.map(async (species) => {
+        if (pokemonSpecies.value.some((pokemon) => pokemon.name === species.name)) return;
+        const pokemonSpeciesData = await getDataByUrl(species.url);
+        if (pokemonSpeciesData) {
+          pokemonSpecies.value.push({ ...pokemonSpeciesData, url: species.url });
+        }
+      }),
+    );
+
+    pokemonSpecies.value.sort((a, b) => a.order - b.order);
   };
 
   return {
