@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { usePokeApiStore } from '@/stores/pokeApi';
 import type { IsMergedGenerationData } from '@/types/generation';
+import type { IsMergedPokedexData } from '@/types/pokedex';
 import type { IsMergedVersionData, IsMergedVersionGroupData, IsVersionStorageData } from '@/types/versions';
 import { getImageUrl, getVersionPath } from '@/utilities/image';
 import { getNameByLanguage } from '@/utilities/pokeApi';
@@ -14,7 +15,7 @@ const baseUrl = import.meta.url;
 const route = useRoute();
 const router = useRouter();
 const pokeApiStore = usePokeApiStore();
-const { getVersionPokedexData } = pokeApiStore;
+const { getPokedexData } = pokeApiStore;
 const { generations, versionsByGeneration, pokedexes } = storeToRefs(pokeApiStore);
 
 const versionId = Number(route.params.versionId);
@@ -22,6 +23,7 @@ const generation = ref<IsMergedGenerationData>();
 const generationVersionData = ref<IsVersionStorageData>();
 const versionGroupData = ref<IsMergedVersionGroupData>();
 const versionData = ref<IsMergedVersionData>();
+const versionPokedexes = ref<IsMergedPokedexData[]>();
 
 onMounted(async () => {
   if (!versionId) {
@@ -49,8 +51,14 @@ onMounted(async () => {
     return;
   }
 
-  await getVersionPokedexData(versionGroupData.value.pokedexes);
+  await getPokedexData(versionGroupData.value.pokedexes);
+
+  versionPokedexes.value = pokedexes.value.filter((pokedex) =>
+    versionGroupData.value?.pokedexes.some((groupPokedex) => groupPokedex.name === pokedex.name),
+  );
 });
+
+// TODO: Set up grid for 10 pokemon per row and show sprite, name and entry number
 </script>
 
 <template>
@@ -67,7 +75,7 @@ onMounted(async () => {
   </template>
 
   <h2>Pokedex</h2>
-  <template v-for="pokedex in pokedexes" :key="pokedex.name">
+  <template v-for="pokedex in versionPokedexes" :key="pokedex.name">
     <h3>{{ toCapitalCase(pokedex.name) }}</h3>
     <ul>
       <li v-for="pokemon in pokedex.pokemon_entries" :key="pokemon.pokemon_species.name">

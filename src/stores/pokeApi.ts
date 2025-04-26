@@ -80,20 +80,16 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     });
   };
 
-  const getVersionPokedexData = async (pokedexesList: IsNamedApiResource[]) => {
-    const pokedexesArray: IsMergedPokedexData[] = [];
-
+  const getPokedexData = async (pokedexesList: IsNamedApiResource[]) => {
     await Promise.all(
       pokedexesList.map(async (pokedex) => {
         if (pokedexes.value.some((item) => item.name === pokedex.name)) return;
         const pokedexData = await getDataByUrl(pokedex.url);
         if (pokedexData) {
-          pokedexesArray.push({ ...pokedexData, url: pokedex.url });
+          pokedexes.value.push({ ...pokedexData, url: pokedex.url });
         }
       }),
     );
-
-    pokedexes.value.push(...pokedexesArray);
   };
 
   return {
@@ -101,7 +97,7 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     pokedexes,
     versionsByGeneration,
     getGenerationsData,
-    getVersionPokedexData,
+    getPokedexData,
     getVersionsData,
   };
 });
