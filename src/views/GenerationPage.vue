@@ -10,6 +10,7 @@ import { getImageUrl, getVersionPath } from '@/utilities/image';
 import { getNameByLanguage } from '@/utilities/pokeApi';
 import { toCapitalCase } from '@/utilities/text';
 
+const baseUrl = import.meta.url;
 const route = useRoute();
 const router = useRouter();
 const pokeApiStore = usePokeApiStore();
@@ -31,8 +32,6 @@ onMounted(async () => {
   await getVersionsData(generation.value.name, generation.value.version_groups);
   versionData.value = versionsByGeneration.value.find((gen) => gen.generation_name === generation.value?.name);
 });
-
-const baseUrl = import.meta.url;
 </script>
 
 <template>
@@ -55,6 +54,7 @@ const baseUrl = import.meta.url;
   grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
   gap: 1rem;
   list-style: none;
+  margin: 1rem 0;
   padding: 0;
 }
 

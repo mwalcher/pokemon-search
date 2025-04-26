@@ -1,6 +1,5 @@
 import { type RemovableRef, useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
 
 import type { IsGenerationData, IsGenerationsData, IsMergedGenerationData } from '@/types/generation';
 import type { IsApiItemReference, IsName, IsUrl } from '@/types/pokeApi';
@@ -15,7 +14,7 @@ import type {
 const apiBaseUrl = 'https://pokeapi.co/api/v2/';
 
 export const usePokeApiStore = defineStore('pokeApi', () => {
-  const generations = ref<IsMergedGenerationData[]>([]);
+  const generations: RemovableRef<IsMergedGenerationData[]> = useStorage('pokeApi_generations', []);
   const versionsByGeneration: RemovableRef<IsVersionStorageData[]> = useStorage('pokeApi_versions', []);
 
   const getDataByUrl = async (url: IsUrl) => {
