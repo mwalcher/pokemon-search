@@ -2,7 +2,8 @@ import { type RemovableRef, useStorage } from '@vueuse/core';
 import { defineStore } from 'pinia';
 
 import type { IsGenerationData, IsGenerationsData, IsMergedGenerationData } from '@/types/generation';
-import type { IsApiItemReference, IsName, IsUrl } from '@/types/pokeApi';
+import type { IsName, IsNamedApiResource, IsUrl } from '@/types/pokeApi';
+import type { IsMergedPokemonSpeciesData } from '@/types/pokemon';
 import type {
   IsMergedVersionData,
   IsMergedVersionGroupData,
@@ -16,6 +17,7 @@ const apiBaseUrl = 'https://pokeapi.co/api/v2/';
 export const usePokeApiStore = defineStore('pokeApi', () => {
   const generations: RemovableRef<IsMergedGenerationData[]> = useStorage('pokeApi_generations', []);
   const versionsByGeneration: RemovableRef<IsVersionStorageData[]> = useStorage('pokeApi_versions', []);
+  const pokemonSpecies: RemovableRef<IsMergedPokemonSpeciesData[]> = useStorage('pokeApi_pokemon', []);
 
   const getDataByUrl = async (url: IsUrl) => {
     const response = await fetch(url, {
@@ -45,11 +47,11 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     }
   };
 
-  const getVersionsData = async (generationName: IsName, versionGroups: IsApiItemReference[]) => {
+  const getVersionsData = async (generationName: IsName, versionGroups: IsNamedApiResource[]) => {
     if (versionsByGeneration.value.some((generation) => generation.generation_name === generationName)) return;
 
     const versionGroupsArray: IsMergedVersionGroupData[] = [];
-    const versionsArray: IsApiItemReference[] = [];
+    const versionsArray: IsNamedApiResource[] = [];
     const versionsDateArray: IsMergedVersionData[] = [];
 
     await Promise.all(
@@ -78,5 +80,23 @@ export const usePokeApiStore = defineStore('pokeApi', () => {
     });
   };
 
-  return { generations, versionsByGeneration, getGenerationsData, getVersionsData };
+  const getPokemonSpeciesData = async (pokemonSpeciesList: IsNamedApiResource[]) => {
+    pokemonSpeciesList.map(async (species, index) => {
+      if (index > 0) return;
+      if (pokemonSpecies.value.some((pokemon) => pokemon.name === species.name)) return;
+      const pokemonSpeciesData = await getDataByUrl(species.url);
+      if (pokemonSpeciesData) {
+        pokemonSpecies.value.push({ ...pokemonSpeciesData, url: species.url });
+      }
+    });
+  };
+
+  return {
+    generations,
+    pokemonSpecies,
+    versionsByGeneration,
+    getGenerationsData,
+    getPokemonSpeciesData,
+    getVersionsData,
+  };
 });

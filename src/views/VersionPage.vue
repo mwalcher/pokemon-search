@@ -14,7 +14,8 @@ const baseUrl = import.meta.url;
 const route = useRoute();
 const router = useRouter();
 const pokeApiStore = usePokeApiStore();
-const { generations, versionsByGeneration } = storeToRefs(pokeApiStore);
+const { getPokemonSpeciesData } = pokeApiStore;
+const { generations, versionsByGeneration, pokemonSpecies } = storeToRefs(pokeApiStore);
 
 const versionId = Number(route.params.versionId);
 const generation = ref<IsMergedGenerationData>();
@@ -38,6 +39,13 @@ onMounted(async () => {
 
   versionData.value = generationVersionData.value.versions.find((version) => version.id === versionId);
   generation.value = generations.value.find((gen) => gen.name === generationVersionData.value?.generation_name);
+
+  if (!versionData.value || !generation.value) {
+    router.push('/');
+    return;
+  }
+
+  await getPokemonSpeciesData(generation.value.pokemon_species);
 });
 </script>
 
@@ -52,6 +60,12 @@ onMounted(async () => {
       :src="getImageUrl(baseUrl, getVersionPath(versionData))"
       :alt="versionData.name"
     />
+    <h2>Pokemon Species</h2>
+    <ul>
+      <li v-for="pokemon in pokemonSpecies" :key="pokemon.name">
+        {{ toCapitalCase(pokemon.name) }} (Order: {{ pokemon.order }})
+      </li>
+    </ul>
   </template>
 </template>
 
