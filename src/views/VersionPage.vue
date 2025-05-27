@@ -107,8 +107,13 @@ onMounted(async () => {
   li {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 0.5rem;
+
+    img {
+      border: 1px solid black;
+      border-radius: 100%;
+    }
   }
 }
 </style>
