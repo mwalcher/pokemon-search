@@ -57,6 +57,8 @@ onMounted(async () => {
     versionGroupData.value?.pokedexes.some((groupPokedex) => groupPokedex.name === pokedex.name),
   );
 });
+
+// TODO: Add sprites for Gen 2+ and update image URL to use National Dex entry numbers so I don't need to update the image names
 </script>
 
 <template>
