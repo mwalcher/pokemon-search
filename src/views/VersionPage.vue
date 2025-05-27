@@ -68,7 +68,7 @@ onMounted(async () => {
     <img
       :class="$style['cover-art']"
       :src="getImageUrl(baseUrl, getVersionPath(versionData))"
-      :alt="versionData.name"
+      :alt="toCapitalCase(getNameByLanguage(versionData.names))"
     />
   </template>
 
@@ -78,9 +78,18 @@ onMounted(async () => {
     <ul :class="$style['pokedex-list']">
       <li v-for="pokemon in pokedex.pokemon_entries" :key="pokemon.pokemon_species.name">
         <img
-          v-if="generation && versionGroupData"
-          :src="getImageUrl(baseUrl, getPokemonPath(generation.name, versionGroupData.name, pokemon.entry_number))"
-          :alt="pokemon.pokemon_species.name"
+          v-if="generation && versionGroupData && versionData"
+          :src="
+            getImageUrl(
+              baseUrl,
+              getPokemonPath(
+                generation.name,
+                generation.id === 2 ? versionData.name : versionGroupData.name,
+                pokemon.entry_number,
+              ),
+            )
+          "
+          :alt="toCapitalCase(pokemon.pokemon_species.name)"
           class="cover-art"
         />
         <span>{{ `#${pokemon.entry_number}` }} {{ toCapitalCase(pokemon.pokemon_species.name) }}</span>

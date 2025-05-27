@@ -12,7 +12,7 @@ export const getVersionPath = (version: IsMergedVersionData) => {
 
 export const getPokemonPath = (
   generationName: IsMergedGenerationData['name'],
-  versionGroupName: IsMergedVersionGroupData['name'],
+  versionGroupName: IsMergedVersionGroupData['name'] | IsMergedVersionData['name'],
   entryNumber: IsPokemonEntryData['entry_number'],
 ) => {
   return `pokemon/${generationName}/${versionGroupName}/${entryNumber}`;
