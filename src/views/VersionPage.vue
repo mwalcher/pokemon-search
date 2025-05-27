@@ -7,7 +7,7 @@ import { usePokeApiStore } from '@/stores/pokeApi';
 import type { IsMergedGenerationData } from '@/types/generation';
 import type { IsMergedPokedexData } from '@/types/pokedex';
 import type { IsMergedVersionData, IsMergedVersionGroupData, IsVersionStorageData } from '@/types/versions';
-import { getImageUrl, getVersionPath } from '@/utilities/image';
+import { getImageUrl, getPokemonPath, getVersionPath } from '@/utilities/image';
 import { getNameByLanguage } from '@/utilities/pokeApi';
 import { toCapitalCase } from '@/utilities/text';
 
@@ -57,8 +57,6 @@ onMounted(async () => {
     versionGroupData.value?.pokedexes.some((groupPokedex) => groupPokedex.name === pokedex.name),
   );
 });
-
-// TODO: Set up grid for 10 pokemon per row and show sprite, name and entry number
 </script>
 
 <template>
@@ -77,9 +75,15 @@ onMounted(async () => {
   <h2>Pokedex</h2>
   <template v-for="pokedex in versionPokedexes" :key="pokedex.name">
     <h3>{{ toCapitalCase(pokedex.name) }}</h3>
-    <ul>
+    <ul :class="$style['pokedex-list']">
       <li v-for="pokemon in pokedex.pokemon_entries" :key="pokemon.pokemon_species.name">
-        {{ toCapitalCase(pokemon.pokemon_species.name) }}
+        <img
+          v-if="generation && versionGroupData"
+          :src="getImageUrl(baseUrl, getPokemonPath(generation.name, versionGroupData.name, pokemon.entry_number))"
+          :alt="pokemon.pokemon_species.name"
+          class="cover-art"
+        />
+        <span>{{ `#${pokemon.entry_number}` }} {{ toCapitalCase(pokemon.pokemon_species.name) }}</span>
       </li>
     </ul>
   </template>
@@ -91,5 +95,20 @@ onMounted(async () => {
   width: 100%;
   max-width: 10rem;
   margin-top: 1rem;
+}
+
+.pokedex-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.5rem;
+  list-style-type: none;
+  padding: 0;
+
+  li {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
 }
 </style>

@@ -12,41 +12,41 @@ export interface IsNamedApiResource extends IsApiResource {
 export type IsNamesData = {
   language: IsNamedApiResource;
   name: IsName;
-}[];
+};
 
 export type IsFlavorTextData = {
   flavor_text: string;
   language: IsNamedApiResource;
   version: IsNamedApiResource;
-}[];
+};
 
 export type IsDescriptionData = {
   description: string;
   language: IsNamedApiResource;
-}[];
+};
 
 export type IsGenusData = {
   genus: string;
   language: IsNamedApiResource;
-}[];
+};
 
 export type IsPalParkData = {
   area: IsNamedApiResource;
   base_score: number;
   rate: number;
-}[];
+};
 
 export type IsPokedexEntryData = {
   entry_number: number;
   pokedex: IsNamedApiResource;
-}[];
+};
 
 export type IsPokemonEntryData = {
   entry_number: number;
   pokemon_species: IsNamedApiResource;
-}[];
+};
 
 export type IsPokemonSpeciesVarietyData = {
   is_default: boolean;
   pokemon: IsNamedApiResource;
-}[];
+};

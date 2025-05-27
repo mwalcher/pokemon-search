@@ -19,11 +19,11 @@ export interface IsPokemonSpeciesData {
   egg_groups: IsNamedApiResource[];
   evolution_chain: IsApiResource;
   evolves_from_species: IsNamedApiResource | null;
-  flavor_text_entries: IsFlavorTextData;
-  form_descriptions: IsDescriptionData;
+  flavor_text_entries: IsFlavorTextData[];
+  form_descriptions: IsDescriptionData[];
   forms_switchable: boolean;
   gender_rate: number;
-  genera: IsGenusData;
+  genera: IsGenusData[];
   generation: IsNamedApiResource;
   growth_rate: IsNamedApiResource;
   habitat: IsNamedApiResource;
@@ -34,12 +34,12 @@ export interface IsPokemonSpeciesData {
   is_legendary: boolean;
   is_mythical: boolean;
   name: IsName;
-  names: IsNamesData;
+  names: IsNamesData[];
   order: number;
-  pal_park_encounters: IsPalParkData;
-  pokedex_numbers: IsPokedexEntryData;
+  pal_park_encounters: IsPalParkData[];
+  pokedex_numbers: IsPokedexEntryData[];
   shape: IsNamedApiResource;
-  varieties: IsPokemonSpeciesVarietyData;
+  varieties: IsPokemonSpeciesVarietyData[];
 }
 
 export interface IsMergedPokemonSpeciesData extends IsPokemonSpeciesData {

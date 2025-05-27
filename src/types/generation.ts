@@ -6,7 +6,7 @@ export interface IsGenerationData {
   main_region: IsNamedApiResource;
   moves: IsNamedApiResource[];
   name: IsName;
-  names: IsNamesData;
+  names: IsNamesData[];
   pokemon_species: IsNamedApiResource[];
   types: IsNamedApiResource[];
   version_groups: IsNamedApiResource[];

@@ -8,12 +8,12 @@ import type {
 } from '@/types/pokeApi';
 
 export interface IsPokedexData {
-  descriptions: IsDescriptionData;
+  descriptions: IsDescriptionData[];
   id: number;
   is_main_series: boolean;
   name: IsName;
-  names: IsNamesData;
-  pokemon_entries: IsPokemonEntryData;
+  names: IsNamesData[];
+  pokemon_entries: IsPokemonEntryData[];
   region: IsNamedApiResource;
   version_groups: IsNamedApiResource[];
 }

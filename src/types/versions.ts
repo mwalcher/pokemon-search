@@ -18,7 +18,7 @@ export interface IsMergedVersionGroupData extends IsVersionGroupData {
 export interface IsVersionData {
   id: number;
   name: IsName;
-  names: IsNamesData;
+  names: IsNamesData[];
   version_group: IsNamedApiResource;
 }
 
